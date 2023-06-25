@@ -58,7 +58,7 @@ final getChatsProvider = FutureProvider.family((ref, String otherUserId) async {
   return chatController.getChats(otherUserId: otherUserId);
 });
 
-final getLatestChatProvider = StreamProvider((ref) {
+final getLatestChatProvider = StreamProvider.autoDispose((ref) {
   final chatApi = ref.watch(chatsApiProvider);
   return chatApi.getLatestChat();
 });

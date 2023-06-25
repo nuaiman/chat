@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_appwrite_chat_app_jun23/features/auth/controller/auth_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../common/error_page.dart';
@@ -25,7 +26,9 @@ class ChatsView extends ConsumerWidget {
         title: const Text('Chatly'),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              ref.read(authControllerProvider.notifier).logout(context);
+            },
             icon: const Icon(Icons.power_settings_new),
           ),
         ],

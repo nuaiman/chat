@@ -28,8 +28,14 @@ class TextList extends ConsumerWidget {
             ref.watch(getLatestChatProvider).when(
                   data: (realTime) {
                     if (realTime.events.contains(
-                        'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.chatsCollection}.documents.*.create')) {
+                            'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.chatsCollection}.documents.*.create') &&
+                        ((realTime.payload['senderId'] == currentUser.id &&
+                                realTime.payload['otherId'] == otherUser.id) ||
+                            (realTime.payload['otherId'] == currentUser.id &&
+                                realTime.payload['senderId'] ==
+                                    otherUser.id))) {
                       // ref.read(getChatsProvider(otherUser.id));
+
                       data.add(ChatModel.fromMap(realTime.payload));
                     }
                   },
@@ -41,10 +47,18 @@ class TextList extends ConsumerWidget {
               itemCount: data.length,
               itemBuilder: (context, index) => BubbleNormal(
                 text: data[index].message,
+                textStyle: TextStyle(
+                  color: data[index].senderId == currentUser.id
+                      ? Colors.black
+                      : Colors.white,
+                  fontSize: 16,
+                ),
                 isSender: data[index].senderId == currentUser.id ? true : false,
-                color: const Color(0xFFE8E8EE),
+                color: data[index].senderId == currentUser.id
+                    ? const Color(0xFFE8E8EE)
+                    : const Color(0xFF1B97F3),
                 tail: true,
-                sent: true,
+                sent: false,
               ),
             );
           },
