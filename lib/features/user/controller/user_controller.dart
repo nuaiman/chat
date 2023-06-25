@@ -37,7 +37,7 @@ final userProfileControllerProvider =
 });
 
 final getUserProfileDetailsFutureProvider =
-    FutureProvider.family((ref, String userId) async {
+    FutureProvider.family((ref, String userId) {
   final profileController = ref.watch(userProfileControllerProvider.notifier);
   return profileController.getUserProfileDetails(userId);
 });

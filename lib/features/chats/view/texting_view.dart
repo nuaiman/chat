@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_appwrite_chat_app_jun23/common/error_page.dart';
-import 'package:flutter_appwrite_chat_app_jun23/common/loading_page.dart';
 import 'package:flutter_appwrite_chat_app_jun23/features/chats/controller/chats_controller.dart';
 import 'package:flutter_appwrite_chat_app_jun23/models/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,9 +25,7 @@ class _TextingViewState extends ConsumerState<TextingView> {
   @override
   void dispose() {
     _textController.dispose();
-    ref
-        .read(chatsControllerProvider.notifier)
-        .getChats(otherUserId: widget.otherUser.id);
+
     super.dispose();
   }
 

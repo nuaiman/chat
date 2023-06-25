@@ -13,15 +13,22 @@ abstract class IChatsApi {
 
   Future<List<Document>> getChats(
       {required String currentUserId, required String otherUserId});
+
+  Stream<RealtimeMessage> getLatestChat();
 }
 // -----------------------------------------------------------------------------
 
 class ChatsApi implements IChatsApi {
   final Databases _databases;
   final Account _account;
-  ChatsApi({required Databases databases, required Account account})
+  final Realtime _realtime;
+  ChatsApi(
+      {required Databases databases,
+      required Account account,
+      required Realtime realtime})
       : _account = account,
-        _databases = databases;
+        _databases = databases,
+        _realtime = realtime;
 
   @override
   Future<String?> createConversation(
@@ -75,7 +82,7 @@ class ChatsApi implements IChatsApi {
       {required String currentUserId, required String otherUserId}) async {
     final documents = await _databases.listDocuments(
       databaseId: AppwriteConstants.databaseId,
-      collectionId: AppwriteConstants.usersCollection,
+      collectionId: AppwriteConstants.chatsCollection,
       // queries: [
       //   Query.equal('id', '${currentUserId}_$otherUserId'),
       //   Query.equal('id', '${otherUserId}_$currentUserId'),
@@ -83,11 +90,19 @@ class ChatsApi implements IChatsApi {
     );
     return documents.documents;
   }
+
+  @override
+  Stream<RealtimeMessage> getLatestChat() {
+    return _realtime.subscribe([
+      'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.chatsCollection}.documents'
+    ]).stream;
+  }
 }
 // -----------------------------------------------------------------------------
 
 final chatsApiProvider = Provider((ref) {
   final databases = ref.watch(appwriteDatabaseProvider);
   final account = ref.watch(appwriteAccountProvider);
-  return ChatsApi(databases: databases, account: account);
+  final realtime = ref.watch(appwriteRealtimeProvider);
+  return ChatsApi(databases: databases, account: account, realtime: realtime);
 });

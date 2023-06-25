@@ -23,10 +23,11 @@ class ChatsControllerNotifier extends StateNotifier<bool> {
       currentUserId: user.$id,
       otherUserId: otherUserId,
       chat: ChatModel(
-        id: '${user.$id}_$otherUserId',
+        identifier: '${user.$id}_$otherUserId',
         senderId: user.$id,
         otherId: otherUserId,
         message: text,
+        date: DateTime.now(),
       ),
     );
   }
@@ -55,4 +56,9 @@ final chatsControllerProvider =
 final getChatsProvider = FutureProvider.family((ref, String otherUserId) async {
   final chatController = ref.watch(chatsControllerProvider.notifier);
   return chatController.getChats(otherUserId: otherUserId);
+});
+
+final getLatestChatProvider = StreamProvider((ref) {
+  final chatApi = ref.watch(chatsApiProvider);
+  return chatApi.getLatestChat();
 });
